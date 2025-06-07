@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
 from telegram.constants import ChatAction
-import whisper
+from pydub import AudioSegment
+import speech_recognition as sr
 from langdetect import detect
 import tempfile
 import requests
@@ -13,22 +14,29 @@ load_dotenv()
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 
-# Inicializar o modelo Whisper (carrega apenas uma vez)
-model = whisper.load_model("base")
-
 async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.chat.send_action(action=ChatAction.TYPING)
     voice = update.message.voice
     file = await context.bot.get_file(voice.file_id)
-    
     with tempfile.TemporaryDirectory() as tmpdir:
-        audio_path = os.path.join(tmpdir, 'audio.ogg')
-        await file.download_to_drive(audio_path)
-        
-        # Transcrever usando Whisper
-        result = model.transcribe(audio_path)
-        text = result["text"]
-        
+        ogg_path = os.path.join(tmpdir, 'audio.ogg')
+        wav_path = os.path.join(tmpdir, 'audio.wav')
+        await file.download_to_drive(ogg_path)
+        # Converter para WAV
+        audio = AudioSegment.from_file(ogg_path)
+        audio.export(wav_path, format='wav')
+        # Transcrever
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(wav_path) as source:
+            audio_data = recognizer.record(source)
+            try:
+                text = recognizer.recognize_google(audio_data, language='pt-BR')
+            except sr.UnknownValueError:
+                try:
+                    text = recognizer.recognize_google(audio_data, language='en-US')
+                except sr.UnknownValueError:
+                    await update.message.reply_text('Não consegui entender o áudio. Tente novamente.')
+                    return
         # Detectar idioma
         idioma = detect(text)
         if idioma == 'pt':
@@ -37,7 +45,6 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
             idioma_nome = 'inglês'
         else:
             idioma_nome = idioma
-            
         # Análise gramatical via Groq
         prompt = f"""
 Você é um corretor gramatical. Analise o texto abaixo, identifique o idioma (português ou inglês), corrija os erros gramaticais e retorne:

@@ -1,5 +1,6 @@
 python-telegram-bot==20.7
 python-dotenv==1.0.0
 groq==0.4.2
-openai-whisper==20231117
+SpeechRecognition==3.10.0
+pydub==0.25.1
 langdetect==1.0.9 
