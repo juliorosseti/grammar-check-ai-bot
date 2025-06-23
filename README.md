@@ -1,59 +1,85 @@
-# Bot Telegram de Análise Gramatical de Áudio
+# Grammar Checker Telegram Bot
 
-Este projeto é um bot do Telegram que recebe áudios, transcreve o conteúdo, identifica o idioma (português ou inglês), analisa gramaticalmente usando IA (Groq) e retorna ao usuário a porcentagem de acerto e os erros gramaticais encontrados.
+A Telegram bot that transcribes voice messages and provides detailed grammar analysis and corrections in English.
 
-## Funcionalidades
-- Recebe áudios via Telegram
-- Transcreve o áudio para texto
-- Detecta automaticamente o idioma (português ou inglês)
-- Analisa gramaticalmente o texto usando IA
-- Retorna porcentagem de acerto e lista de erros gramaticais
+## Features
 
-## Como rodar localmente
+- Voice message transcription using Groq's Whisper API
+- Detailed grammar analysis and corrections
+- Support for English language
+- Clear and structured feedback with emojis
+- Real-time processing
 
-### 1. Clone o repositório
+## Setup
+
+1. Clone the repository:
 ```bash
-git clone <url-do-repo>
-cd projeto_ia_telegram
+git clone https://github.com/yourusername/bot-grammar-checker.git
+cd bot-grammar-checker
 ```
 
-### 2. Instale as dependências
+2. Create a virtual environment and activate it:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configure as variáveis de ambiente
-Crie um arquivo `.env` baseado no exemplo `.env.example`:
-
+4. Create a `.env` file in the project root with your API keys:
 ```
-TELEGRAM_BOT_TOKEN=seu_token_do_telegram
-GROQ_API_KEY=sua_api_key_groq
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+GROQ_API_KEY=your_groq_api_key
 ```
 
-### 4. Rode o bot
+5. Run the bot:
 ```bash
 python bot.py
 ```
 
-## Como obter as chaves
-- **TELEGRAM_BOT_TOKEN**: Crie um bot no Telegram falando com o [@BotFather](https://t.me/BotFather) e obtenha o token.
-- **GROQ_API_KEY**: Crie uma conta em https://groq.com/ e gere uma API Key.
+## Usage
 
-## Hospedagem gratuita
-Você pode hospedar este bot gratuitamente em plataformas como:
-- [Railway](https://railway.app/)
-- [Render](https://render.com/)
+1. Start a chat with your bot on Telegram
+2. Send a voice message in English
+3. The bot will:
+   - Transcribe your voice message
+   - Analyze the grammar
+   - Provide corrections and explanations
+   - Show the accuracy percentage
+   - List any issues found
+   - Offer corrected versions
+   - Explain the grammar rules
 
-Basta criar um novo projeto, subir o código, definir as variáveis de ambiente e rodar o comando:
-```
-python bot.py
-```
+## Response Format
 
-## Observações
-- O bot aceita apenas mensagens de voz (áudio).
-- O tempo de resposta depende do tamanho do áudio e da resposta da IA.
-- O bot identifica automaticamente se o áudio está em português ou inglês.
+The bot provides responses in the following format:
 
----
+📝 Analyzed sentence:  
+[Your transcribed text]
 
-Feito com ❤️ para análise gramatical inteligente! 
+✅ Grammar accuracy:  
+[Percentage]% correct
+
+🚫 Issues found:  
+- [List of grammar problems]
+
+💡 Correct version(s):  
+- [1-3 corrected versions]
+
+📚 Grammar explanation:  
+- [Explanation of corrections]
+
+## Requirements
+
+- Python 3.8+
+- python-telegram-bot
+- python-dotenv
+- groq
+- requests
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details. 
